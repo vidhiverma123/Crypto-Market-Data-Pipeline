@@ -1,0 +1,1349 @@
+{
+  "datasets": [
+    {
+      "name": "24def079",
+      "displayName": "24h traded volume",
+      "queryLines": [
+        "SELECT\n",
+        "  name                                             AS Coin,\n",
+        "  market_cap_rank                                  AS Rank,\n",
+        "  ROUND(total_volume / 1e9, 2)                     AS `24h Volume (B USD)`,\n",
+        "  ROUND(liquidity_strength * 100, 1)               AS `Vol/MCap %`\n",
+        "FROM crypto_db.gold_market_snapshot\n",
+        "ORDER BY total_volume DESC;"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "1e34612a",
+      "displayName": "Market_Cap",
+      "queryLines": [
+        "SELECT\n",
+        "  name                                             AS Coin,\n",
+        "  market_cap_rank                                  AS Rank,\n",
+        "  ROUND(market_cap / 1e9, 2)                       AS `Market Cap (B USD)`,\n",
+        "  market_segment                                   AS Segment\n",
+        "FROM crypto_db.gold_market_snapshot\n",
+        "ORDER BY market_cap_rank ASC;"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "73797c0a",
+      "displayName": "Top Ranked Cryptocurrency Market Snapshot Summary",
+      "queryLines": [
+        "SELECT\n",
+        "  name                                             AS Coin,\n",
+        "  market_cap_rank                                  AS Rank,\n",
+        "  ROUND(current_price, 2)                          AS `Current Price (USD)`,\n",
+        "  CASE\n",
+        "    WHEN price_change_percentage_24h > 0 THEN 'Up'\n",
+        "    WHEN price_change_percentage_24h < 0 THEN 'Down'\n",
+        "    ELSE 'Flat'\n",
+        "  END                                              AS Direction\n",
+        "FROM crypto_db.gold_market_snapshot\n",
+        "ORDER BY market_cap_rank ASC;"
+      ]
+    },
+    {
+      "name": "4761eb44",
+      "displayName": "Crypto Market Trends and Moving Averages Dataset",
+      "queryLines": [
+        "SELECT\n",
+        "    coin_id,   -- ✅ ADD THIS\n",
+        "    candle_date AS Date,\n",
+        "    ROUND(open, 2)  AS Open,\n",
+        "    ROUND(high, 2)  AS High,\n",
+        "    ROUND(low, 2)   AS Low,\n",
+        "    ROUND(close, 2) AS Close,\n",
+        "    ROUND(ma_7d, 2)  AS `MA 7 Days`,\n",
+        "    ROUND(ma_14d, 2) AS `MA 14 Days`,\n",
+        "    ROUND(ma_30d, 2) AS `MA 30 Days`,\n",
+        "    ROUND(support_14d, 2) AS `Support (14d)`,\n",
+        "    ROUND(resistance_14d, 2) AS `Resistance (14d)`\n",
+        "FROM crypto_db.gold_ohlc_history\n",
+        "ORDER BY candle_date;"
+      ],
+      "columns": [
+        {
+          "displayName": "Direction",
+          "description": "Bullish/Bearish candle direction based on Close vs Open",
+          "expression": "CASE WHEN `Close` > `Open` THEN 'BULL' WHEN `Close` < `Open` THEN 'BEAR' ELSE 'DOJI' END"
+        }
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "ae808998",
+      "displayName": "Gold Market Daily Range and Volatility Trends Dataset",
+      "queryLines": [
+        "SELECT\n",
+        "  coin_id AS `Coin ID`,\n",
+        "  candle_date AS Date,\n",
+        "  ROUND(daily_range_pct, 3) AS `Daily Range %`,\n",
+        "  ROUND(volatility_7d, 4) AS `7-Day Volatility`,\n",
+        "  daily_candle_direction AS Direction\n",
+        "FROM\n",
+        "  crypto_db.gold_ohlc_history\n",
+        "ORDER BY\n",
+        "  candle_date ASC"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "c5fb6775",
+      "displayName": "Gold Market Insights Data",
+      "queryLines": [
+        "SELECT\n",
+        "  candle_date                           AS Date,\n",
+        "  ROUND(daily_range_pct, 3)             AS `Daily Range %`,\n",
+        "  ROUND(volatility_7d, 4)               AS `7-Day Volatility`,\n",
+        "  daily_candle_direction                AS `Direction`\n",
+        "FROM crypto_db.gold_ohlc_history\n",
+        "ORDER BY candle_date ASC;"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "98a37e3c",
+      "displayName": "Top Gainers in Gold Market Price Changes Dataset",
+      "queryLines": [
+        "SELECT\n",
+        "  name,\n",
+        "  ROUND(price_change_percentage_24h / 100, 4) AS pct\n",
+        "FROM\n",
+        "  crypto_db.gold_market_snapshot\n",
+        "ORDER BY\n",
+        "  price_change_percentage_24h DESC\n",
+        "LIMIT 1"
+      ]
+    },
+    {
+      "name": "d1199baa",
+      "displayName": "gold market lowest daily price change dataset",
+      "queryLines": [
+        " SELECT\n",
+        "  name,\n",
+        "  ROUND(price_change_percentage_24h / 100, 4) AS pct\n",
+        "FROM\n",
+        "  crypto_db.gold_market_snapshot\n",
+        "ORDER BY\n",
+        "  price_change_percentage_24h ASC\n",
+        "LIMIT 1"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "f580c1f6",
+      "displayName": "Crypto Trends Analysis Ratio",
+      "queryLines": [
+        "SELECT \n",
+        "    ROUND(gainers_count * 1.0 / NULLIF(losers_count, 0), 2) AS ratio\n",
+        "FROM crypto_db.gold_market_summary\n",
+        "ORDER BY ingestion_date DESC\n",
+        "LIMIT 1;"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "a5742bc9",
+      "displayName": "Top Five Gold Performance Metrics",
+      "queryLines": [
+        "SELECT\n",
+        "    name,\n",
+        "    price_change_percentage_24h,\n",
+        "    total_volume,\n",
+        "    market_cap,\n",
+        "    gainer_rank\n",
+        "FROM crypto_db.gold_performance_metrics\n",
+        "WHERE ingestion_date = (\n",
+        "    SELECT MAX(ingestion_date)\n",
+        "    FROM crypto_db.gold_performance_metrics\n",
+        ")\n",
+        "  AND gainer_rank <= 5\n",
+        "ORDER BY gainer_rank;"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "25fb4e2d",
+      "displayName": "Gold Market Decline Insights",
+      "queryLines": [
+        "SELECT\n",
+        "    name,\n",
+        "    price_change_percentage_24h,\n",
+        "    total_volume,\n",
+        "    market_cap,\n",
+        "    loser_rank\n",
+        "FROM crypto_db.gold_performance_metrics\n",
+        "WHERE ingestion_date = (\n",
+        "    SELECT MAX(ingestion_date)\n",
+        "    FROM crypto_db.gold_performance_metrics\n",
+        ")\n",
+        "  AND loser_rank <= 5\n",
+        "ORDER BY loser_rank;"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
+    },
+    {
+      "name": "d81e3baf",
+      "displayName": "Daily Snapshot of Top Trending Cryptocurrency Metrics",
+      "queryLines": [
+        "SELECT\n",
+        "  t.trending_rank AS `Trending Rank`,\n",
+        "  t.name AS Coin,\n",
+        "  t.symbol AS Symbol,\n",
+        "  t.market_cap_rank AS `MCap Rank`,\n",
+        "  ROUND(\n",
+        "    COALESCE(t.price_change_percentage_24h, m.price_change_percentage_24h),\n",
+        "    2\n",
+        "  ) AS `24h Change %`,\n",
+        "  ROUND(COALESCE(t.current_price, m.current_price), 4) AS `Price (USD)`,\n",
+        "  ROUND(COALESCE(t.market_cap, m.market_cap) / 1e9, 2) AS `MCap (B USD)`,\n",
+        "  t.performance_label AS Label,\n",
+        "  t.trading_signal AS Signal\n",
+        "FROM\n",
+        "  crypto_space.crypto_db.gold_trending_coins t\n",
+        "    LEFT JOIN crypto_space.crypto_db.gold_market_snapshot m\n",
+        "      ON t.coin_id = m.id\n",
+        "WHERE\n",
+        "  t.ingestion_date\n",
+        "    = (\n",
+        "      SELECT\n",
+        "        MAX(ingestion_date)\n",
+        "      FROM\n",
+        "        crypto_space.crypto_db.gold_trending_coins\n",
+        "    )\n",
+        "ORDER BY\n",
+        "  t.trending_rank ASC"
+      ],
+      "columns": [
+        {
+          "displayName": "Series",
+          "description": "Constant value for single-color bar chart",
+          "expression": "'Coin'"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "6e32f14f",
+      "displayName": "Market Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "cc9d4790",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1e34612a",
+                  "fields": [
+                    {
+                      "name": "Segment",
+                      "expression": "`Segment`"
+                    },
+                    {
+                      "name": "Market Cap (B USD)",
+                      "expression": "`Market Cap (B USD)`"
+                    },
+                    {
+                      "name": "Coin",
+                      "expression": "`Coin`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Market Cap by Coin",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Market Cap (B USD)",
+                  "scale": {
+                    "type": "quantitative",
+                    "fn": {
+                      "type": "symlog"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "Coin",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "Segment",
+                  "displayName": "Segment",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Top_10",
+                        "color": "#3B82F6"
+                      },
+                      {
+                        "value": "Top_50",
+                        "color": "#6B7280"
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "24-hour-traded-volume",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "24def079",
+                  "fields": [
+                    {
+                      "name": "24h Volume (B USD)",
+                      "expression": "`24h Volume (B USD)`"
+                    },
+                    {
+                      "name": "Coin",
+                      "expression": "`Coin`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "24-hour traded volume "
+              },
+              "mark": {
+                "colors": [
+                  "#60A5FA",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "24h Volume (B USD)",
+                  "scale": {
+                    "type": "quantitative",
+                    "fn": {
+                      "type": "symlog"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "Coin",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 1,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "current-price-top-20",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "73797c0a",
+                  "fields": [
+                    {
+                      "name": "Direction",
+                      "expression": "`Direction`"
+                    },
+                    {
+                      "name": "Current Price (USD)",
+                      "expression": "`Current Price (USD)`"
+                    },
+                    {
+                      "name": "Coin",
+                      "expression": "`Coin`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Current Price: Top 20"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Current Price (USD)",
+                  "scale": {
+                    "type": "quantitative",
+                    "fn": {
+                      "type": "symlog"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "Coin",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "Direction",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Up",
+                        "color": "#10B981"
+                      },
+                      {
+                        "value": "Down",
+                        "color": "#EF4444"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "title_text",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Market Overview\n",
+                "<p>&nbsp;</p>\n"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "4e8feec7",
+      "displayName": "Price History & Volatility",
+      "layout": [
+        {
+          "widget": {
+            "name": "choose-coin",
+            "queries": [
+              {
+                "name": "dashboards/01f13c0225cb1589945889a0661a4156/datasets/01f13c0424de17ce8291df07b6c8fda8_coin_id",
+                "query": {
+                  "datasetName": "4761eb44",
+                  "fields": [
+                    {
+                      "name": "coin_id",
+                      "expression": "`coin_id`"
+                    },
+                    {
+                      "name": "coin_id_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Choose Coin:"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "coin_id",
+                    "queryName": "dashboards/01f13c0225cb1589945889a0661a4156/datasets/01f13c0424de17ce8291df07b6c8fda8_coin_id"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "daily-range-volatility",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ae808998",
+                  "fields": [
+                    {
+                      "name": "Direction",
+                      "expression": "`Direction`"
+                    },
+                    {
+                      "name": "Coin ID",
+                      "expression": "`Coin ID`"
+                    },
+                    {
+                      "name": "Date",
+                      "expression": "`Date`"
+                    },
+                    {
+                      "name": "Daily Range %",
+                      "expression": "`Daily Range %`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Daily Range and Volatility",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Date",
+                  "displayName": "Date",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "Daily Range %",
+                  "displayName": "Daily Range %",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Direction",
+                  "displayName": "Direction",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "BEAR",
+                        "color": "#EF4444"
+                      },
+                      {
+                        "value": "DOJI",
+                        "color": "#6B7280"
+                      },
+                      {
+                        "value": "BULL",
+                        "color": "#10B981"
+                      }
+                    ]
+                  }
+                },
+                "extra": [
+                  {
+                    "fieldName": "Coin ID",
+                    "displayName": "Coin ID"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "title_text",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Price History & Volatility\n",
+                "<p>&nbsp;</p>\n"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "d2c4b9c5",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "4761eb44",
+                  "fields": [
+                    {
+                      "name": "Date",
+                      "expression": "`Date`"
+                    },
+                    {
+                      "name": "Close",
+                      "expression": "`Close`"
+                    },
+                    {
+                      "name": "High",
+                      "expression": "`High`"
+                    },
+                    {
+                      "name": "Low",
+                      "expression": "`Low`"
+                    },
+                    {
+                      "name": "MA 14 Days",
+                      "expression": "`MA 14 Days`"
+                    },
+                    {
+                      "name": "MA 7 Days",
+                      "expression": "`MA 7 Days`"
+                    },
+                    {
+                      "name": "MA 30 Days",
+                      "expression": "`MA 30 Days`"
+                    },
+                    {
+                      "name": "Open",
+                      "expression": "`Open`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#037CE0",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  "#85E5CB",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "selectionColor"
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "Date",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "Close"
+                    },
+                    {
+                      "fieldName": "High"
+                    },
+                    {
+                      "fieldName": "Low"
+                    },
+                    {
+                      "fieldName": "MA 14 Days"
+                    },
+                    {
+                      "fieldName": "MA 7 Days"
+                    },
+                    {
+                      "fieldName": "MA 30 Days"
+                    },
+                    {
+                      "fieldName": "Open"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 12,
+            "height": 7
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "d8f94b15",
+      "displayName": "Top Gainers & Losers",
+      "layout": [
+        {
+          "widget": {
+            "name": "top_gainer_pct",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "98a37e3c",
+                  "fields": [
+                    {
+                      "name": "max(pct)",
+                      "expression": "MAX(`pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Top Gainer (24h)",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(pct)",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "rules": [
+                      {
+                        "condition": {
+                          "operand": {
+                            "type": "data-value",
+                            "value": "0"
+                          },
+                          "operator": ">"
+                        },
+                        "color": "#10B981"
+                      }
+                    ]
+                  },
+                  "displayName": "pct"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "top_loser_pct",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d1199baa",
+                  "fields": [
+                    {
+                      "name": "min(pct)",
+                      "expression": "MIN(`pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Top Loser (24h)",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "min(pct)",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "rules": [
+                      {
+                        "condition": {
+                          "operand": {
+                            "type": "data-value",
+                            "value": "0"
+                          },
+                          "operator": "<"
+                        },
+                        "color": "#EF4444"
+                      }
+                    ]
+                  },
+                  "displayName": "pct"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 1,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "gainer_loser_ratio",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f580c1f6",
+                  "fields": [
+                    {
+                      "name": "max(ratio)",
+                      "expression": "MAX(`ratio`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Gainer / Loser Ratio",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(ratio)",
+                  "format": {
+                    "type": "number-plain",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 2
+                    },
+                    "abbreviation": "none"
+                  },
+                  "style": {
+                    "rules": [
+                      {
+                        "condition": {
+                          "operand": {
+                            "type": "data-value",
+                            "value": "1"
+                          },
+                          "operator": ">"
+                        },
+                        "color": "#10B981"
+                      },
+                      {
+                        "condition": {
+                          "operand": {
+                            "type": "data-value",
+                            "value": "1"
+                          },
+                          "operator": "<"
+                        },
+                        "color": "#EF4444"
+                      }
+                    ]
+                  },
+                  "displayName": "ratio"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 1,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "top5_gainers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a5742bc9",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "expression": "`name`"
+                    },
+                    {
+                      "name": "price_change_percentage_24h",
+                      "expression": "`price_change_percentage_24h`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Top 5 Gainers (24h)",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "name",
+                  "displayName": "Coin",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "price_change_percentage_24h",
+                  "displayName": "24h Change %",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "name",
+                  "legend": {
+                    "hide": true
+                  },
+                  "displayName": "Coin",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Monero",
+                        "color": "#2D8A6E"
+                      },
+                      {
+                        "value": "Figure Heloc",
+                        "color": "#4A7FB5"
+                      },
+                      {
+                        "value": "Canton",
+                        "color": "#6B7FA0"
+                      },
+                      {
+                        "value": "TRON",
+                        "color": "#7A9B8E"
+                      },
+                      {
+                        "value": "LEO Token",
+                        "color": "#5C8A7D"
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "top5_losers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "25fb4e2d",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "expression": "`name`"
+                    },
+                    {
+                      "name": "sum(price_change_percentage_24h)",
+                      "expression": "SUM(`price_change_percentage_24h`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Top 5 Losers (24h)",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "name",
+                  "displayName": "Coin",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(price_change_percentage_24h)",
+                  "displayName": "24h Change %",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "name",
+                  "legend": {
+                    "hide": true
+                  },
+                  "displayName": "Coin",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "MemeCore",
+                        "color": "#B44D4D"
+                      },
+                      {
+                        "value": "Hyperliquid",
+                        "color": "#8C4966"
+                      },
+                      {
+                        "value": "BNB",
+                        "color": "#6B4C7A"
+                      },
+                      {
+                        "value": "Dogecoin",
+                        "color": "#4E5E8B"
+                      },
+                      {
+                        "value": "Chainlink",
+                        "color": "#3D6E7A"
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 4,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "title_text",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Top Gainers & Losers\n",
+                "<p>&nbsp;</p>\n"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "d4145447",
+      "displayName": "Trending Coins",
+      "layout": [
+        {
+          "widget": {
+            "name": "e721c787",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d81e3baf",
+                  "fields": [
+                    {
+                      "name": "Coin",
+                      "expression": "`Coin`"
+                    },
+                    {
+                      "name": "min(MCap Rank)",
+                      "expression": "MIN(`MCap Rank`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "IN_RANGE(`Trending Rank`, 1, 7)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Top 7 Trending Coins by MCap Rank",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Coin",
+                  "displayName": "Coin",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "min(MCap Rank)",
+                  "displayName": "MCap Rank",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Coin",
+                  "legend": {
+                    "hide": true
+                  },
+                  "displayName": "Coin",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Bitcoin",
+                        "color": "#0D4F6B"
+                      },
+                      {
+                        "value": "Aave",
+                        "color": "#1A7A8A"
+                      },
+                      {
+                        "value": "Siren",
+                        "color": "#2196A6"
+                      },
+                      {
+                        "value": "Pudgy Penguins",
+                        "color": "#2BB5B8"
+                      },
+                      {
+                        "value": "LayerZero",
+                        "color": "#3DD4C0"
+                      },
+                      {
+                        "value": "Monad",
+                        "color": "#5EEDC7"
+                      },
+                      {
+                        "value": "RaveDAO",
+                        "color": "#7FFFD4"
+                      },
+                      {
+                        "value": "Asteroid Shiba",
+                        "color": "#A8FFE0"
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "title_text",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Trending Coins\n",
+                "<p>&nbsp;</p>\n"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
