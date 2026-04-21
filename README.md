@@ -1,3 +1,4 @@
+
 # 🪙 Crypto Market Intelligence Pipeline
 
 A production-grade **Databricks + Delta Lake** data pipeline that ingests live cryptocurrency data from the **CoinGecko API**, processes it through a **Medallion Architecture** (Bronze → Silver → Gold), and serves a real-time **Crypto Market Intelligence Dashboard**.
@@ -5,7 +6,7 @@ A production-grade **Databricks + Delta Lake** data pipeline that ingests live c
 ---
 
 ## 📐 Architecture Overview
-
+<img width="832" height="553" alt="Screenshot 2026-04-21 at 12 16 57 PM" src="https://github.com/user-attachments/assets/1e84a86f-4fd6-4a79-9d75-2dfff262b592" />
 
 ## 📁 Project Structure
 
@@ -148,16 +149,11 @@ Step 4 — Gold Aggregation
 ---
 
 ## 📈 Dashboard
+<img width="881" height="573" alt="Screenshot 2026-04-21 at 12 30 41 PM" src="https://github.com/user-attachments/assets/883ac8a6-31fb-461d-aebb-21b943b8c1b0" />
+<img width="886" height="724" alt="Screenshot 2026-04-21 at 12 30 21 PM" src="https://github.com/user-attachments/assets/85db93fe-8172-4c78-a7f3-7abddda6ff0c" />
+<img width="886" height="814" alt="Screenshot 2026-04-21 at 12 29 56 PM" src="https://github.com/user-attachments/assets/1268bb10-78e8-471f-a1e0-6abf32cb9ba4" />
+<img width="915" height="801" alt="Screenshot 2026-04-21 at 12 29 11 PM" src="https://github.com/user-attachments/assets/b709c2f2-9c3e-4485-a44e-0dc4103fe0ce" />
 
-The file `Crypto Market Intelligence.lvdash.json` is a **Databricks Lakeview dashboard**.
-
-**To import:**
-1. Open your Databricks workspace
-2. Navigate to **Dashboards** → **Import**
-3. Upload `Crypto Market Intelligence.lvdash.json`
-4. Ensure all Gold tables have been populated before viewing
-
----
 
 ## 🔧 Configuration
 
