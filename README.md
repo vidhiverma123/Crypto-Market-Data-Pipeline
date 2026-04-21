@@ -150,9 +150,22 @@ Step 4 — Gold Aggregation
 
 ## 📈 Dashboard
 <img width="881" height="573" alt="Screenshot 2026-04-21 at 12 30 41 PM" src="https://github.com/user-attachments/assets/883ac8a6-31fb-461d-aebb-21b943b8c1b0" />
+
 <img width="886" height="724" alt="Screenshot 2026-04-21 at 12 30 21 PM" src="https://github.com/user-attachments/assets/85db93fe-8172-4c78-a7f3-7abddda6ff0c" />
+
 <img width="886" height="814" alt="Screenshot 2026-04-21 at 12 29 56 PM" src="https://github.com/user-attachments/assets/1268bb10-78e8-471f-a1e0-6abf32cb9ba4" />
+
 <img width="915" height="801" alt="Screenshot 2026-04-21 at 12 29 11 PM" src="https://github.com/user-attachments/assets/b709c2f2-9c3e-4485-a44e-0dc4103fe0ce" />
+
+## 📌 Job & Pipelines 
+
+Jobs : 
+<img width="927" height="400" alt="Screenshot 2026-04-21 at 12 46 04 PM" src="https://github.com/user-attachments/assets/321bd6af-5d7d-4214-b570-0a2c39734591" />
+
+Alert : 
+
+<img width="703" height="547" alt="Screenshot 2026-04-21 at 12 46 57 PM" src="https://github.com/user-attachments/assets/07aa41a3-c403-4eb6-9a41-7987d8dc2909" />
+
 
 
 ## 🔧 Configuration
