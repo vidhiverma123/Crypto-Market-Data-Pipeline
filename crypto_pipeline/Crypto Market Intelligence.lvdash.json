@@ -5,15 +5,22 @@
       "displayName": "24h traded volume",
       "queryLines": [
         "SELECT\n",
-        "  name                                             AS Coin,\n",
-        "  market_cap_rank                                  AS Rank,\n",
-        "  ROUND(total_volume / 1e9, 2)                     AS `24h Volume (B USD)`,\n",
-        "  ROUND(liquidity_strength * 100, 1)               AS `Vol/MCap %`\n",
-        "FROM crypto_db.gold_market_snapshot\n",
-        "ORDER BY total_volume DESC;"
+        "  name AS Coin,\n",
+        "  market_cap_rank AS Rank,\n",
+        "  ROW_NUMBER() OVER (ORDER BY total_volume DESC) AS vol_rank,\n",
+        "  ROUND(total_volume / 1e9, 2) AS `24h Volume (B USD)`,\n",
+        "  ROUND(liquidity_strength * 100, 1) AS `Vol/MCap %`,\n",
+        "  market_segment AS Segment\n",
+        "FROM\n",
+        "  crypto_db.gold_market_snapshot"
       ],
-      "catalog": "crypto_space",
-      "schema": "crypto_db"
+      "columns": [
+        {
+          "displayName": "Ranked Coin",
+          "description": "Coin name prefixed with volume rank for correct sort order",
+          "expression": "CONCAT(LPAD(CAST(`vol_rank` AS STRING), 2, '0'), '. ', `Coin`)"
+        }
+      ]
     },
     {
       "name": "1e34612a",
@@ -27,6 +34,25 @@
         "FROM crypto_db.gold_market_snapshot\n",
         "ORDER BY market_cap_rank ASC;"
       ],
+      "columns": [
+        {
+          "displayName": "Ranked Coin",
+          "description": "Coin name prefixed with rank for correct sort order in horizontal bars",
+          "expression": "CONCAT(LPAD(CAST(`Rank` AS STRING), 2, '0'), '. ', `Coin`)"
+        },
+        {
+          "displayName": "Total Market Cap (B USD)",
+          "expression": "SUM(`Market Cap (B USD)`)"
+        },
+        {
+          "displayName": "BTC Price (USD)",
+          "expression": "MAX(CASE WHEN `Coin` = 'Bitcoin' THEN `Market Cap (B USD)` END)"
+        },
+        {
+          "displayName": "BTC Market Cap (B USD)",
+          "expression": "MAX(CASE WHEN `Coin` = 'Bitcoin' THEN `Market Cap (B USD)` END)"
+        }
+      ],
       "catalog": "crypto_space",
       "schema": "crypto_db"
     },
@@ -35,16 +61,24 @@
       "displayName": "Top Ranked Cryptocurrency Market Snapshot Summary",
       "queryLines": [
         "SELECT\n",
-        "  name                                             AS Coin,\n",
-        "  market_cap_rank                                  AS Rank,\n",
-        "  ROUND(current_price, 2)                          AS `Current Price (USD)`,\n",
+        "  name AS Coin,\n",
+        "  market_cap_rank AS Rank,\n",
+        "  ROW_NUMBER() OVER (ORDER BY current_price DESC) AS price_rank,\n",
+        "  ROUND(current_price, 2) AS `Current Price (USD)`,\n",
         "  CASE\n",
         "    WHEN price_change_percentage_24h > 0 THEN 'Up'\n",
         "    WHEN price_change_percentage_24h < 0 THEN 'Down'\n",
         "    ELSE 'Flat'\n",
-        "  END                                              AS Direction\n",
-        "FROM crypto_db.gold_market_snapshot\n",
-        "ORDER BY market_cap_rank ASC;"
+        "  END AS Direction\n",
+        "FROM\n",
+        "  crypto_db.gold_market_snapshot"
+      ],
+      "columns": [
+        {
+          "displayName": "Ranked Coin",
+          "description": "Coin name prefixed with price rank for correct sort order",
+          "expression": "CONCAT(LPAD(CAST(`price_rank` AS STRING), 2, '0'), '. ', `Coin`)"
+        }
       ]
     },
     {
@@ -258,8 +292,8 @@
                       "expression": "`Market Cap (B USD)`"
                     },
                     {
-                      "name": "Coin",
-                      "expression": "`Coin`"
+                      "name": "Ranked Coin",
+                      "expression": "`Ranked Coin`"
                     }
                   ],
                   "disaggregated": true
@@ -276,6 +310,7 @@
               "encodings": {
                 "x": {
                   "fieldName": "Market Cap (B USD)",
+                  "displayName": "Market Cap (B USD)",
                   "scale": {
                     "type": "quantitative",
                     "fn": {
@@ -284,7 +319,8 @@
                   }
                 },
                 "y": {
-                  "fieldName": "Coin",
+                  "fieldName": "Ranked Coin",
+                  "displayName": "Ranked Coin",
                   "scale": {
                     "type": "categorical"
                   }
@@ -305,9 +341,6 @@
                       }
                     ]
                   }
-                },
-                "label": {
-                  "show": false
                 }
               }
             }
@@ -329,12 +362,16 @@
                   "datasetName": "24def079",
                   "fields": [
                     {
+                      "name": "Segment",
+                      "expression": "`Segment`"
+                    },
+                    {
                       "name": "24h Volume (B USD)",
                       "expression": "`24h Volume (B USD)`"
                     },
                     {
-                      "name": "Coin",
-                      "expression": "`Coin`"
+                      "name": "Ranked Coin",
+                      "expression": "`Ranked Coin`"
                     }
                   ],
                   "disaggregated": true
@@ -344,54 +381,14 @@
             "spec": {
               "version": 3,
               "frame": {
-                "showTitle": true,
-                "title": "24-hour traded volume "
-              },
-              "mark": {
-                "colors": [
-                  "#60A5FA",
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 2
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 3
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 4
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 5
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 6
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 7
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 8
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 9
-                  },
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 10
-                  }
-                ]
+                "title": "24-Hour Traded Volume",
+                "showTitle": true
               },
               "widgetType": "bar",
               "encodings": {
                 "x": {
                   "fieldName": "24h Volume (B USD)",
+                  "displayName": "24h Volume (B USD)",
                   "scale": {
                     "type": "quantitative",
                     "fn": {
@@ -400,9 +397,27 @@
                   }
                 },
                 "y": {
-                  "fieldName": "Coin",
+                  "fieldName": "Ranked Coin",
+                  "displayName": "Ranked Coin",
                   "scale": {
                     "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "Segment",
+                  "displayName": "Segment",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Top_10",
+                        "color": "#3B82F6"
+                      },
+                      {
+                        "value": "Top_50",
+                        "color": "#6B7280"
+                      }
+                    ]
                   }
                 }
               }
@@ -433,8 +448,8 @@
                       "expression": "`Current Price (USD)`"
                     },
                     {
-                      "name": "Coin",
-                      "expression": "`Coin`"
+                      "name": "Ranked Coin",
+                      "expression": "`Ranked Coin`"
                     }
                   ],
                   "disaggregated": true
@@ -444,13 +459,14 @@
             "spec": {
               "version": 3,
               "frame": {
-                "showTitle": true,
-                "title": "Current Price: Top 20"
+                "title": "Current Price: Top 20",
+                "showTitle": true
               },
               "widgetType": "bar",
               "encodings": {
                 "x": {
                   "fieldName": "Current Price (USD)",
+                  "displayName": "Current Price (B USD)",
                   "scale": {
                     "type": "quantitative",
                     "fn": {
@@ -459,13 +475,15 @@
                   }
                 },
                 "y": {
-                  "fieldName": "Coin",
+                  "fieldName": "Ranked Coin",
+                  "displayName": "Ranked Coin",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "color": {
                   "fieldName": "Direction",
+                  "displayName": "Direction",
                   "scale": {
                     "type": "categorical",
                     "mappings": [

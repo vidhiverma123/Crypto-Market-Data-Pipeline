@@ -28,7 +28,7 @@ SILVER_OHLC     = f"{DB_NAME}.silver_ohlc_metrics"
 GOLD_TRADER     = f"{DB_NAME}.gold_trader_signals"
 GOLD_INVESTOR   = f"{DB_NAME}.gold_investor_signals"
 GOLD_MARKET_SNAP= f"{DB_NAME}.gold_market_snapshot"
-
+TOP_N_COINS = 20
 # Delta table paths (stored inside Databricks managed storage)
 DELTA_BASE = "dbfs:/user/hive/warehouse/crypto_db.db"
 
