@@ -160,12 +160,8 @@ Step 4 — Gold Aggregation
 
 ## 📌 Job & Pipelines 
 
-Jobs : 
-<img width="927" height="400" alt="Screenshot 2026-04-21 at 12 46 04 PM" src="https://github.com/user-attachments/assets/321bd6af-5d7d-4214-b570-0a2c39734591" />
+<img width="1836" height="902" alt="image" src="https://github.com/user-attachments/assets/9ed79074-d82b-4272-ab85-9a143af1b28a" />
 
-Alert : 
-
-<img width="703" height="547" alt="Screenshot 2026-04-21 at 12 46 57 PM" src="https://github.com/user-attachments/assets/07aa41a3-c403-4eb6-9a41-7987d8dc2909" />
 
 
 
