@@ -236,6 +236,52 @@
         "  COALESCE(t.market_cap, m.market_cap) DESC\n",
         "LIMIT 7"
       ]
+    },
+    {
+      "name": "counter_metrics",
+      "displayName": "Key Market Metrics",
+      "queryLines": [
+        "SELECT\n",
+        "  ROUND(SUM(market_cap) / 1e9, 2) AS total_mcap_current,\n",
+        "  ROUND(SUM(market_cap / (1 + price_change_percentage_24h / 100)) / 1e9, 2) AS total_mcap_previous,\n",
+        "  ROUND(SUM(total_volume) / 1e9, 2) AS total_volume_current,\n",
+        "  ROUND(\n",
+        "    MAX(\n",
+        "      CASE\n",
+        "        WHEN name = 'Bitcoin' THEN current_price\n",
+        "      END\n",
+        "    ),\n",
+        "    0\n",
+        "  ) AS btc_price_current,\n",
+        "  ROUND(\n",
+        "    MAX(\n",
+        "      CASE\n",
+        "        WHEN name = 'Bitcoin' THEN current_price / (1 + price_change_percentage_24h / 100)\n",
+        "      END\n",
+        "    ),\n",
+        "    0\n",
+        "  ) AS btc_price_previous,\n",
+        "  ROUND(\n",
+        "    MAX(\n",
+        "      CASE\n",
+        "        WHEN name = 'Bitcoin' THEN market_cap / 1e9\n",
+        "      END\n",
+        "    ),\n",
+        "    2\n",
+        "  ) AS btc_mcap_current,\n",
+        "  ROUND(\n",
+        "    MAX(\n",
+        "      CASE\n",
+        "        WHEN name = 'Bitcoin' THEN market_cap / (1 + price_change_percentage_24h / 100) / 1e9\n",
+        "      END\n",
+        "    ),\n",
+        "    2\n",
+        "  ) AS btc_mcap_previous\n",
+        "FROM\n",
+        "  gold_market_snapshot"
+      ],
+      "catalog": "crypto_space",
+      "schema": "crypto_db"
     }
   ],
   "pages": [
@@ -830,6 +876,11 @@
                 "showTitle": true,
                 "title": "Gainer / Loser Ratio"
               },
+              "style": {
+                "fontColor": {
+                  "light": "#17A230"
+                }
+              },
               "widgetType": "counter",
               "encodings": {
                 "value": {
@@ -1116,6 +1167,171 @@
             "y": 38,
             "width": 12,
             "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "total_mcap_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "counter_metrics",
+                  "fields": [
+                    {
+                      "name": "max(total_mcap_current)",
+                      "expression": "MAX(`total_mcap_current`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Market Cap ($B)",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(total_mcap_current)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 7,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "total_volume_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "counter_metrics",
+                  "fields": [
+                    {
+                      "name": "max(total_volume_current)",
+                      "expression": "MAX(`total_volume_current`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "24h Trading Volume ($B)",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(total_volume_current)",
+                  "format": {
+                    "type": "number-plain",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 2
+                    },
+                    "abbreviation": "compact"
+                  },
+                  "displayName": "Trading Volume"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 10,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "btc_price_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "counter_metrics",
+                  "fields": [
+                    {
+                      "name": "max(btc_price_current)",
+                      "expression": "MAX(`btc_price_current`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "BTC Price ($)",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(btc_price_current)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 10,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "btc_mcap_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "counter_metrics",
+                  "fields": [
+                    {
+                      "name": "max(btc_mcap_current)",
+                      "expression": "MAX(`btc_mcap_current`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "BTC Market Cap ($B)",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(btc_mcap_current)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 7,
+            "width": 3,
+            "height": 3
           }
         }
       ],
