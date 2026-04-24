@@ -6,7 +6,6 @@ A production-grade **Databricks + Delta Lake** data pipeline that ingests live c
 ---
 
 ## 📐 Architecture Overview
-<img width="867" height="548" alt="Screenshot 2026-04-24 at 11 13 14 AM" src="https://github.com/user-attachments/assets/27140314-c6b6-418a-ba85-71d410eae1be" />
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/e24f36fc-1186-47bf-8b0d-f977096312a8" />
 
 ## 📁 Project Structure
