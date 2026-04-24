@@ -6,8 +6,8 @@ A production-grade **Databricks + Delta Lake** data pipeline that ingests live c
 ---
 
 ## 📐 Architecture Overview
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/2fd47a57-e643-419f-ac81-8c3ed0bd39b1" />
-
+<img width="867" height="548" alt="Screenshot 2026-04-24 at 11 13 14 AM" src="https://github.com/user-attachments/assets/27140314-c6b6-418a-ba85-71d410eae1be" />
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/e24f36fc-1186-47bf-8b0d-f977096312a8" />
 
 ## 📁 Project Structure
 
@@ -150,13 +150,17 @@ Step 4 — Gold Aggregation
 ---
 
 ## 📈 Dashboard
-<img width="881" height="573" alt="Screenshot 2026-04-21 at 12 30 41 PM" src="https://github.com/user-attachments/assets/883ac8a6-31fb-461d-aebb-21b943b8c1b0" />
+<img width="848" height="522" alt="Screenshot 2026-04-24 at 11 13 50 AM" src="https://github.com/user-attachments/assets/44efbae1-6a54-4278-ab4e-5c9eaeb4fd11" />
 
-<img width="886" height="724" alt="Screenshot 2026-04-21 at 12 30 21 PM" src="https://github.com/user-attachments/assets/85db93fe-8172-4c78-a7f3-7abddda6ff0c" />
+<img width="1010" height="570" alt="Screenshot 2026-04-24 at 11 14 16 AM" src="https://github.com/user-attachments/assets/906d5388-e0c1-49ef-a622-b6dc2408cf13" />
 
-<img width="886" height="814" alt="Screenshot 2026-04-21 at 12 29 56 PM" src="https://github.com/user-attachments/assets/1268bb10-78e8-471f-a1e0-6abf32cb9ba4" />
+<img width="952" height="591" alt="Screenshot 2026-04-24 at 11 14 39 AM" src="https://github.com/user-attachments/assets/5cd71f53-03b1-402b-a87b-01b1355c85f1" />
 
-<img width="915" height="801" alt="Screenshot 2026-04-21 at 12 29 11 PM" src="https://github.com/user-attachments/assets/b709c2f2-9c3e-4485-a44e-0dc4103fe0ce" />
+<img width="1036" height="546" alt="Screenshot 2026-04-24 at 11 14 59 AM" src="https://github.com/user-attachments/assets/53184c9f-a4f8-43b0-b747-b860da957f0e" />
+
+<img width="1076" height="452" alt="Screenshot 2026-04-24 at 11 15 27 AM" src="https://github.com/user-attachments/assets/b3f935db-bfce-49f8-909c-f8b6a80dccb8" />
+
+
 
 ## 📌 Job & Pipelines 
 
